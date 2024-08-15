@@ -5,6 +5,9 @@ import torch
 from fastapi import FastAPI
 
 
+print(f"PyMilvus: {pymilvus.__version__}")
+
+
 app = FastAPI()
 # # Initialize torch settings
 DEVICE = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')

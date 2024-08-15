@@ -135,6 +135,7 @@ dist
 
 # service: embedding
 venv
+=1.2.2
 
 # service: milvus
 volumes
