@@ -128,3 +128,13 @@ dist
 .yarn/build-state.yml
 .yarn/install-state.gz
 .pnp.*
+
+# others
+**/__pycache__
+**/*.pyc
+
+# service: embedding
+venv
+
+# service: milvus
+volumes
