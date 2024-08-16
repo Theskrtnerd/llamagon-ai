@@ -1,0 +1,8 @@
+fastapi
+uvicorn
+torch 
+torchvision 
+torchaudio
+pymilvus
+pymilvus[model]
+peft
