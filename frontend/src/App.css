@@ -1,0 +1,129 @@
+* {
+  padding: 0;
+  margin: 0;
+}
+.App {
+  text-align: center;
+  padding: 0px;
+  margin: 0px;
+}
+.App-header {
+  background-color: #282c34;
+  height: 10vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+  position: fixed;
+  width: 100vw;
+  z-index: 999;
+}
+.App-search {
+  width: 50%;
+  padding: 10px;
+  border: 2px solid #ccc; /* Light grey border */
+  border-radius: 4px; /* Rounded corners */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+}
+.content {
+  width: 100vw;
+  height: 100vh;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+}
+.left-side {
+  margin-top: 20vh;
+  width: 30%;
+  height: 100%;
+  /* background-color: #ccc; */
+  border-right: 1px solid black;
+  position: fixed;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.reference-box {
+  margin-top: 10px;
+  width: 90%;
+  height: 30%;
+  border: 1px solid black;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  border-radius: 5px;
+}
+.content-header {
+  color: white;
+  width: 100%;
+  height: 50px;
+  background-color: #282c34;
+  border-radius: 5px 5px 0 0;
+}
+.reference-detail {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.chatbot-box {
+  margin: 10px 0;
+  width: 90%;
+  height: 70%;
+  /* background-color: white; */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+.chatbot-box>div {
+  border: 1px solid black;
+}
+.chatbot-detail {
+  width: 100%;
+  border: 1px solid black;
+  height: 70%;
+}
+.chatbot-content {
+  height: 90%;
+}
+.chatbot-footer {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+  height: 10%;
+  border-bottom: 1px solid black;
+  border-top: 1px solid black;
+  background-color: #f2f2f2; /* Light grey background */
+  /* border-top: 1px solid #ccc; Light grey border at the top */
+}
+.chatbot-input {
+  width: 80%; /* Takes up most of the footer space */
+  padding: 10px;
+  border: 1px solid black;
+}
+
+.chatbot-button {
+  padding: 10px 20px;
+  background-color: #007bff; /* Bootstrap primary blue */
+  color: white;
+  border: 1px solid black;
+  cursor: pointer; /* Changes cursor to pointer on hover */
+}
+
+.chatbot-button:hover {
+  background-color: #0056b3; /* Darker blue on hover */
+}
+.right-side {
+  margin-top: 20vh;
+  margin-left: 30%;
+  width: 70%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

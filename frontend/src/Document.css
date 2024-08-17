@@ -1,0 +1,10 @@
+.page {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    height: 5vh;
+}
+.page button {
+    margin: 0 10px;
+}
