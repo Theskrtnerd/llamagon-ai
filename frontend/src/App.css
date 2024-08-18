@@ -1,3 +1,9 @@
+:root {
+  --primary: #dce0d9;
+  --secondary: #fbf6ef;
+  --other: #ead7c3;
+  --primary-text: black;
+}
 * {
   padding: 0;
   margin: 0;
@@ -8,7 +14,7 @@
   margin: 0px;
 }
 .App-header {
-  background-color: #282c34;
+  background-color: var(--primary);
   height: 10vh;
   display: flex;
   flex-direction: column;
@@ -19,13 +25,19 @@
   position: fixed;
   width: 100vw;
   z-index: 999;
+  border-bottom: 1px solid black;
 }
 .App-search {
   width: 50%;
-  padding: 10px;
-  border: 2px solid #ccc; /* Light grey border */
+  /* padding: 10px; */
+  color: "secondary";
   border-radius: 4px; /* Rounded corners */
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+  /* box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); */
+}
+.search-items {
+  width: 50%;
+  position: fixed;
+  background-color: black;
 }
 .content {
   width: 100vw;
@@ -57,28 +69,35 @@
   align-items: center;
   border-radius: 5px;
 }
+.reference-box>div {
+  border-bottom: 1px solid black;
+}
 .content-header {
-  color: white;
+  color: var(--primary-text);
   width: 100%;
   height: 50px;
-  background-color: #282c34;
+  background-color: var(--primary);
   border-radius: 5px 5px 0 0;
-}
-.reference-detail {
-  width: 100%;
-  height: 100%;
+  line-height: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
 }
+.reference-detail {
+  width: 100%;
+  height: 100%;
+  justify-content: center;
+  align-items: center;
+  overflow-y: scroll;
+}
 .chatbot-box {
-  margin: 10px 0;
+  margin-top: 10px;
   width: 90%;
   height: 70%;
-  /* background-color: white; */
   display: flex;
   flex-direction: column;
   align-items: center;
+  border-radius: 5px;
 }
 .chatbot-box>div {
   border: 1px solid black;
@@ -90,6 +109,24 @@
 }
 .chatbot-content {
   height: 90%;
+  display: flex;
+  flex-direction: column;
+}
+.agent, .user {
+  display: block;
+  margin: 5px;
+  padding: 10px;
+  border-radius: 5px;
+}
+
+.agent {
+  align-self: flex-start;
+  background-color: #f0f0f0; /* Example color */
+}
+
+.user {
+  align-self: flex-end;
+  background-color: #d1e7dd; /* Example color */
 }
 .chatbot-footer {
   display: flex;
@@ -98,8 +135,7 @@
   height: 10%;
   border-bottom: 1px solid black;
   border-top: 1px solid black;
-  background-color: #f2f2f2; /* Light grey background */
-  /* border-top: 1px solid #ccc; Light grey border at the top */
+  background-color: var(--secondary);
 }
 .chatbot-input {
   width: 80%; /* Takes up most of the footer space */

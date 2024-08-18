@@ -2,8 +2,10 @@
 
 import React, { useRef, useState, useEffect, useCallback } from "react";
 import "./App.css"
+import TextField from "@mui/material/TextField";
 import { pdfjs } from 'react-pdf';
 import MyDocument from "./Document";
+import Chatbot from "./Chatbot"
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css'
 import 'react-pdf/dist/esm/Page/TextLayer.css'
 
@@ -27,55 +29,27 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/legacy/build/pdf.worke
 
 function App() {
   const [searchValue, setSearchValue] = useState('');
-  // const [recommendations, setRecommendations] = useState([]);
-  const [content, setContent] = useState('');
-  // const [timeoutId, setTimeoutId] = useState(null); // State to store the timeout ID
 
-  // const allRecommendations = ['Apple', 'Banana', 'Cherry', 'Date', 'Elderberry'];
-
-  const handleSearchChange = (event) => {
-    const value = event.target.value;
-    setSearchValue(value);
-
-    // // Clear the previous timeout if the user continues typing
-    // if (timeoutId) {
-    //   clearTimeout(timeoutId);
-    // }
-
-    // // Set a new timeout
-    // const newTimeoutId = setTimeout(() => {
-    //   // Filter recommendations based on the search value
-    //   if (value.length > 0) {
-    //     const filteredRecommendations = allRecommendations.filter(item =>
-    //       item.toLowerCase().includes(value.toLowerCase())
-    //     );
-    //     setRecommendations(filteredRecommendations);
-    //   } else {
-    //     setRecommendations([]);
-    //   }
-    // }, 500); // 0.5 seconds delay
-
-    // setTimeoutId(newTimeoutId); // Store the new timeout ID
-  };
-
-  const handleKeyDown = (event) => {
-    if (event.key === 'Enter') {
-      setContent(searchValue);
-      // Or if passing via state: navigate('/search', { state: { query: searchValue } });
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      setSearchValue(e.target.value);
+      console.log(e.target.value);
     }
   };
 
   return (
     <div className="App">
       <header className="App-header">
-        <input
-          type="search"
-          placeholder="Search..."
-          className="App-search"
-          value={searchValue}
-          onChange={handleSearchChange}
-          onKeyDown={handleKeyDown}
-        />
+        <div className="App-search">
+          <TextField
+            id="outlined-basic"
+            variant="outlined"
+            fullWidth
+            label="Search"
+
+            onKeyPress={handleKeyPress}
+          />
+        </div>
       </header>
       <div className="content">
         <div className="left-side">
@@ -83,7 +57,19 @@ function App() {
             <div className="content-header">
               <h3>References</h3>
             </div>
-            <div className="content-detail">
+            <div className="reference-detail">
+              <p>Test</p>
+              <p>Test</p>
+              <p>Test</p>
+              <p>Test</p>
+              <p>Test</p>
+              <p>Test</p>
+              <p>Test</p>
+              <p>Test</p>
+              <p>Test</p>
+              <p>Test</p>
+              <p>Test</p>
+              <p>Test</p>
               <p>Test</p>
               <p>Test</p>
             </div>
@@ -92,22 +78,15 @@ function App() {
             <div className="content-header">
               <h3>Chatbot</h3>
             </div>
-            <div className="chatbot-detail">
-              <div className="chatbot-content">
-                <p>Test</p>
-              </div>
-              <div className="chatbot-footer">
-                <input
-                  type="text"
-                  placeholder="Type a message..."
-                  className="chatbot-input"
-                />
-                <button className="chatbot-button">Send</button>
-              </div>
-            </div>
+            <Chatbot />
           </div>
         </div>
-        <div className="right-side">
+        <div className="right-side"
+          onContextMenu={(e) => {
+            e.preventDefault();
+            console.log("Content: ", window.getSelection().toString());
+          }}
+          >
           <MyDocument />
         </div>
       </div>
