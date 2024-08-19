@@ -133,8 +133,9 @@ dist
 **/__pycache__
 **/*.pyc
 
-# service: main
+# service: main_app
 data
+**/.env
 
 # service: embedding
 venv

@@ -25,10 +25,9 @@ schema = CollectionSchema(fields, "")
 
 collection_existed = utility.has_collection(COLLECTION_NAME)
 if collection_existed:
-    # print("Yes")
-    print(f"Collection `{COLLECTION_NAME}` already exists. No collection created.")
+    print(f"Collection `{COLLECTION_NAME}` already exists. No collection created.", flush=True)
     # drop_result = utility.drop_collection(COLLECTION_NAME)
-    # print(f"Successfully dropped collection: `{COLLECTION_NAME}`")
+    # print(f"Successfully dropped collection: `{COLLECTION_NAME}`", flush=True)
 else:
     schema = CollectionSchema(fields, "")
     col = Collection(COLLECTION_NAME, schema, consistency_level="Eventually")
@@ -53,4 +52,4 @@ else:
     col.create_index("dense_vector", dense_index)
     col.load()
 
-    print(f"Successfully created collection: `{COLLECTION_NAME}`")
+    print(f"Successfully created collection: `{COLLECTION_NAME}`", flush=True)

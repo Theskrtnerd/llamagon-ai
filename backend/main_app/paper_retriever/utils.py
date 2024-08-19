@@ -1,6 +1,5 @@
 import xml.etree.ElementTree as ET
 import requests
-import feedparser
 
 
 def get_title_from_doi(doi: str):

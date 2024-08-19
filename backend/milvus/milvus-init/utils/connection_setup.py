@@ -3,23 +3,21 @@ import pymilvus
 from pymilvus import (
     MilvusClient, utility, connections,
 )
-print(f"Pymilvus: {pymilvus.__version__}")
+print(f"Pymilvus: {pymilvus.__version__}", flush=True)
 
+async def wait_for_milvus():
+    while True:
+        try:
+            connection = connections.connect(
+                alias="default", 
+                host='34.209.51.63', 
+                port='19530'
+            )
+            print(f"Milvus server instantiated: {utility.get_server_version()}", flush=True)
+            break
+        except Exception as e:
+            print(f"Connection failed. Retrying... {e}", flush=True)
+            await asyncio.sleep(1)  # Properly await the sleep coroutine
 
-# Connect to the local server
-while True:
-    try:
-        connection = connections.connect(
-            alias="default", 
-            host='localhost', # or '0.0.0.0' or 'localhost'
-            port='19530'
-        )
-        # Get server version.
-        print(f"Milvus: {utility.get_server_version()}")
-        # Check the collection using MilvusClient.
-        mc = MilvusClient(connections=connection)
-        break
-    except:
-        print("Connection failed. Retrying...")
-        asyncio.sleep(1)
-        continue
+# Run the wait_for_milvus function
+asyncio.run(wait_for_milvus())
