@@ -1,0 +1,1 @@
+uvicorn llm-chat.main:app --reload --port 8004

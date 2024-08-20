@@ -133,6 +133,10 @@ dist
 **/__pycache__
 **/*.pyc
 
+# service: main_app
+data
+**/.env
+
 # service: embedding
 venv
 =1.2.2
