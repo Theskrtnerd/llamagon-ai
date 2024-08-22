@@ -42,9 +42,23 @@ def encode_pdf_and_get_split_documents(path, chunk_size=1000, chunk_overlap=200)
     return cleaned_texts
 
 
+async def fetch_with_retries(client: httpx.AsyncClient, url: str, json_data: dict, retries: int = 3) -> httpx.Response:
+    attempt = 0
+    while attempt < retries:
+        try:
+            response = await client.post(url, json=json_data)
+            response.raise_for_status()  # Raises HTTPError for bad responses
+            return response
+        except (httpx.RequestError, httpx.HTTPStatusError) as e:
+            attempt += 1
+            if attempt >= retries:
+                raise e
+            print(f"Attempt {attempt} failed: {e}. Retrying...")
+            await asyncio.sleep(1)  # Exponential backoff could be added here
+
+
 async def get_dense_vectors(list_of_documents: List[Document]) -> List[List[float]]:
     docs = [doc.page_content for doc in list_of_documents] 
-    # docs = ["bbb" for _ in range(len(list_of_documents))]
     slice_size = 10
     tasks = []
     dense_vectors = []
@@ -52,9 +66,9 @@ async def get_dense_vectors(list_of_documents: List[Document]) -> List[List[floa
     async with httpx.AsyncClient(timeout=60.0) as client:
         for i in range(0, len(docs), slice_size):
             sliced_docs = docs[i:i + slice_size]
-            tasks.append(client.post("http://34.209.51.63:8003/compute-embedding/", json={"text_list": sliced_docs}))
+            tasks.append(fetch_with_retries(client, "http://34.209.51.63:8003/compute-embedding/", {"text_list": sliced_docs}))
 
-        responses = await asyncio.gather(*tasks, return_exceptions=True)
+        responses = await asyncio.gather(*tasks, return_exceptions=True)        # run tasks and gather the results of the tasks
         print(f"Responses: {responses}")
         
         for idx, response in enumerate(responses):
