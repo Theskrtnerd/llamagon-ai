@@ -4,6 +4,16 @@ WORKDIR /app
 
 COPY requirements.txt /app
 
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    libxml2-dev \
+    libxslt1-dev \
+    libsqlite3-dev \
+    ruby \
+    ruby-dev
+
+RUN gem install anystyle-cli
+
 RUN pip install --upgrade pip setuptools wheel
 RUN pip install -r requirements.txt
 

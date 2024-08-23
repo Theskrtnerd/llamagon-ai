@@ -1,3 +1,8 @@
 fastapi
 uvicorn
 requests
+pandas
+scikit-learn
+pypdf
+tqdm
+python-multipart
