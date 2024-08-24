@@ -1,17 +1,17 @@
 from fastapi import FastAPI, HTTPException
 from fastapi.responses import JSONResponse
-from openai import OpenAI
+from groq import Groq
 from dotenv import load_dotenv
 import os
 
 load_dotenv()
 
-client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
+client = Groq(api_key=os.getenv("GROQ_API_KEY"))
 from pydantic import BaseModel
 
 app = FastAPI()
 
-# Load the OpenAI API key from environment variables
+# Load the GROQ API key from environment variables
 
 # Define the input schema
 class ChatInput(BaseModel):
@@ -27,7 +27,7 @@ async def chat_with_context(input: ChatInput):
         # Prepare the prompt with context and question
         prompt = f"Context: {context}\n\nQuestion: {question}"
 
-        response = client.chat.completions.create(model="gpt-4o-mini", 
+        response = client.chat.completions.create(model="llama3-8b-8192", 
         messages=[
             {"role": "system", "content": "You are an assistant."},
             {"role": "user", "content": prompt}
