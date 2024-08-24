@@ -10,7 +10,7 @@ print(f"PyMilvus: {pymilvus.__version__}")
 
 app = FastAPI()
 # # Initialize torch settings
-DEVICE = torch.device('cuda:0' if torch.cuda.is_available() else 'cpu')
+DEVICE = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 print(f"device: {DEVICE}")
 
 # Initialize a Milvus built-in sparse-dense-reranking encoder.

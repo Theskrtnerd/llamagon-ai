@@ -6,3 +6,10 @@ scikit-learn
 pypdf
 tqdm
 python-multipart
+beautifulsoup4
+langchain
+langchain-milvus
+langchain-community
+httpx
+pymilvus[model]
+nltk

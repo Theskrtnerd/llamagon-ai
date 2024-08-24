@@ -21,8 +21,14 @@ while True:
         milvus_client = MilvusClient(connections=connection)
         break
     except:
+        max_retries = 3
+        retries = 0
         print("Connection to Milvus server failed. Retrying...")
         asyncio.sleep(1)
+        retries += 1
+        if retries >= max_retries:
+            print("Max retries reached. Exiting...")
+            break
         continue
 
 

@@ -2,6 +2,9 @@ from pydantic import BaseModel, Field
 from typing import List
 
 class TextInput(BaseModel):
+    request_id: int = Field(
+        example=0
+    ),
     text_list: List[str] = Field(
         example=[
         "In brain cells, brain tumors can be identified as unnatural and unregulated development. Consequently, as the person’s cranium is hard and capacity bounded, any sudden development will affect human functions based on the portion of the brain involvement and the cancer may also spread to other parts of the body. As stated by WHO, World Cancer Report; Cerebrum disease represents under 2% of human malignant growth; anyway, serious toxicity and complicacy are generated (B. W. Stewart 2014). In the United Kingdom, It is estimated that annually around 5,250 deaths are recorded due to actions of brain, Central Nervous System (CNS), and other intracranial tumors (Brain, 2019).", 

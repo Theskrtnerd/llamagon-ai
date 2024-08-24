@@ -1,8 +1,8 @@
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
-from fastapi.params import Query
-import requests
-import os
+from fastapi.params import Body
+from ref_retriever.schemas import TextInput
+from ref_retriever.utils.parsing import extract_citation
 
 
 router = APIRouter(
@@ -16,6 +16,12 @@ def read_root():
     return JSONResponse(content={"message": "Welcome to the reference search API"})
 
 
-@router.get("/search")
-def search():
-    pass
+@router.post("/search")
+def search(input: TextInput):
+    try:
+        text = input.text
+        print(f"Input: {text[:100]}...")
+        citations = extract_citation(text)
+        return JSONResponse(status_code=200, content={"message": "References extracted.", "data": citations})
+    except Exception as e:
+        raise JSONResponse(status_code=500, content={"message": f"{e}"})

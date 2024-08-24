@@ -19,4 +19,4 @@ def make_working_dir():
     paper_uuid = uuid.uuid4()
     working_dir = f"{SHARED_DATA_DIR}/papers/{paper_uuid}"
     pathlib.Path(working_dir).mkdir(parents=True, exist_ok=True)
-    return working_dir
+    return working_dir, paper_uuid

@@ -3,6 +3,9 @@ from fastapi.responses import JSONResponse
 from paper_retriever.utils.parsing import parse_pdf2text, parse_references_and_citations, parse_references
 from paper_retriever.utils.io import make_working_dir, save_pdf
 from paper_retriever.utils.crossref import retrieve_from_crossref
+import paper_retriever.utils.indexing
+from paper_retriever.utils.indexing import index_paper_chunks, index_references
+from langchain.document_loaders import PyPDFLoader
 
 
 router = APIRouter(
@@ -17,10 +20,10 @@ def read_root():
 
 
 @router.post("/index_paper")
-def index_paper(file: UploadFile = File(...)):
+async def index_paper(file: UploadFile = File(...)):
     try:
         # Set up working directory and save the PDF file
-        working_dir = make_working_dir()
+        working_dir, paper_uuid = make_working_dir()
         paper_path = save_pdf(working_dir, file) 
         print(f"\nPDF file saved to: {paper_path}")
 
@@ -38,8 +41,12 @@ def index_paper(file: UploadFile = File(...)):
         # Query titles of references by crossref, and filter out results with title that shared high similarity with the query titles
         retrieve_df = retrieve_from_crossref(parsed_refs)
         retrieve_df = retrieve_df[retrieve_df["tf-idf_score"] > 0.7]
-        return JSONResponse(status_code=200, content={"message": "The file is a paper.", "data": retrieve_df.to_dict(orient='records')})
 
+        # Index into Milvus DB
+        await index_paper_chunks(paper_path, paper_uuid)
+        await index_references(retrieve_df)
+
+        return JSONResponse(status_code=200, content={"message": "The file is a paper.", "data": retrieve_df.to_dict(orient='records')})
     
     except Exception as e:
         raise JSONResponse(status_code=500, content={"message": f"{e}"})

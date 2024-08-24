@@ -2,8 +2,6 @@ FROM python:3.11-slim
 
 WORKDIR /app
 
-COPY requirements.txt /app
-
 RUN apt-get update && apt-get install -y \
     build-essential \
     libxml2-dev \
@@ -14,8 +12,11 @@ RUN apt-get update && apt-get install -y \
 
 RUN gem install anystyle-cli
 
+COPY requirements.txt /app
+
 RUN pip install --upgrade pip setuptools wheel
 RUN pip install -r requirements.txt
+RUN python -m nltk.downloader punkt
 
 COPY . /app
 

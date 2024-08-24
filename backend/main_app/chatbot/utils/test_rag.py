@@ -66,7 +66,8 @@ async def get_dense_vectors(list_of_documents: List[Document]) -> List[List[floa
     async with httpx.AsyncClient(timeout=60.0) as client:
         for i in range(0, len(docs), slice_size):
             sliced_docs = docs[i:i + slice_size]
-            tasks.append(fetch_with_retries(client, "http://34.209.51.63:8003/compute-embedding/", {"text_list": sliced_docs}))
+            request_id = i
+            tasks.append(fetch_with_retries(client, "http://34.209.51.63:8003/compute-embedding/", {"request_id": request_id, "text_list": sliced_docs}))
 
         responses = await asyncio.gather(*tasks, return_exceptions=True)        # run tasks and gather the results of the tasks
         print(f"Responses: {responses}")

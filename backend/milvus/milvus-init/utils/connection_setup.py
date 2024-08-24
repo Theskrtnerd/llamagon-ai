@@ -1,8 +1,6 @@
 import asyncio
 import pymilvus
-from pymilvus import (
-    MilvusClient, utility, connections,
-)
+from pymilvus import utility, connections
 print(f"Pymilvus: {pymilvus.__version__}", flush=True)
 
 async def wait_for_milvus():
@@ -13,7 +11,7 @@ async def wait_for_milvus():
                 host='34.209.51.63', 
                 port='19530'
             )
-            print(f"Milvus server instantiated: {utility.get_server_version()}", flush=True)
+            print(f"Milvus server started: {utility.get_server_version()}", flush=True)
             break
         except Exception as e:
             print(f"Connection failed. Retrying... {e}", flush=True)
