@@ -1,13 +1,12 @@
 'use client'
 
-import React, { useRef, useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect } from "react";
 import "./App.css"
 import TextField from "@mui/material/TextField";
 import { pdfjs } from 'react-pdf';
+
 import MyDocument from "./Document";
 import Chatbot from "./Chatbot"
-import 'react-pdf/dist/esm/Page/AnnotationLayer.css'
-import 'react-pdf/dist/esm/Page/TextLayer.css'
 
 // import pdfjsWorker from "react-pdf/node_modules/pdfjs-dist/webpack";
 
@@ -29,17 +28,70 @@ pdfjs.GlobalWorkerOptions.workerSrc = new URL('pdfjs-dist/legacy/build/pdf.worke
 
 function App() {
   const [searchValue, setSearchValue] = useState('');
+  const [messages, setMessages] = useState([]);
+  const [history, setHistory] = useState([]);
+
+  useEffect(() => {
+    // Load the list from local storage on component mount
+    const storedInputs = localStorage.getItem('searchHistory');
+    if (storedInputs) {
+      setHistory(JSON.parse(storedInputs));
+    }
+  }, []);
 
   const handleKeyPress = (e) => {
     if (e.key === 'Enter') {
-      setSearchValue(e.target.value);
-      console.log(e.target.value);
+      if (searchValue === e.target.value) {
+        return;
+      } 
+      setSearchValue(e.target.value);   
+      
     }
   };
 
+  // Define the callback function
+  const addMessage = async (data) => {
+    if (messages.length === 0) {
+      alert("You need to load the document context first");
+    }
+    if (messages.length > 0) {
+      const lastMessage = messages[messages.length - 1];
+      if (lastMessage && lastMessage.role === 'user') {
+        return;
+      }
+      if (data.trim()) {
+        const currentMessages = [...messages, { role: 'user', content: data }]
+        setMessages(currentMessages);
+        // Handle backend API call here
+        console.log(currentMessages);
+        try {
+          const response = await fetch(`http://34.209.51.63:8000/chatbot/chat`, {
+            method: 'POST',
+            headers: {
+              "Content-Type": "application/json",
+              "accept": "application/json",
+            },
+            body: JSON.stringify(currentMessages),
+          });
+
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+  
+          const res = await response.json();
+          console.log("Loaded message");
+          setMessages([...currentMessages, { role: 'assistant', content: res.answer }]);
+        } catch (error) {
+          console.error('There was a problem with the fetch operation:', error);
+        }
+      }
+    }
+  };
+
+
   return (
     <div className="App">
-      <header className="App-header">
+      <div className="App-header">
         <div className="App-search">
           <TextField
             id="outlined-basic"
@@ -50,45 +102,29 @@ function App() {
             onKeyPress={handleKeyPress}
           />
         </div>
-      </header>
-      <div className="content">
+      </div>
+      <div className="App-content">
         <div className="left-side">
-          <div className="reference-box">
+          <div className="history-box">
             <div className="content-header">
-              <h3>References</h3>
+              <h3>History</h3>
             </div>
-            <div className="reference-detail">
-              <p>Test</p>
-              <p>Test</p>
-              <p>Test</p>
-              <p>Test</p>
-              <p>Test</p>
-              <p>Test</p>
-              <p>Test</p>
-              <p>Test</p>
-              <p>Test</p>
-              <p>Test</p>
-              <p>Test</p>
-              <p>Test</p>
-              <p>Test</p>
-              <p>Test</p>
+            <div className="history-detail">
+              {history && history.map((item, index) => (
+                <div key={index} className="history-item" onClick={() => setSearchValue(item)}>
+                  {item}
+                </div>
+              ))}
             </div>
           </div>
           <div className="chatbot-box">
             <div className="content-header">
               <h3>Chatbot</h3>
             </div>
-            <Chatbot />
+            <Chatbot messages={messages} addMessage={addMessage}/>
           </div>
         </div>
-        <div className="right-side"
-          onContextMenu={(e) => {
-            e.preventDefault();
-            console.log("Content: ", window.getSelection().toString());
-          }}
-          >
-          <MyDocument />
-        </div>
+        <MyDocument url={searchValue} addMessage={addMessage} history={history} setHistory={setHistory} setMessages={setMessages}/>
       </div>
     </div>
   );
