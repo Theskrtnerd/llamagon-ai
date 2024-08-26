@@ -52,7 +52,7 @@ function App() {
   // Define the callback function
   const addMessage = async (data) => {
     if (messages.length === 0) {
-      alert("You need to load the document context first");
+      alert("You need to index paper first");
     }
     if (messages.length > 0) {
       const lastMessage = messages[messages.length - 1];
@@ -63,7 +63,6 @@ function App() {
         const currentMessages = [...messages, { role: 'user', content: data }]
         setMessages(currentMessages);
         // Handle backend API call here
-        console.log(currentMessages);
         try {
           const response = await fetch(`http://34.209.51.63:8000/chatbot/chat`, {
             method: 'POST',
@@ -71,15 +70,13 @@ function App() {
               "Content-Type": "application/json",
               "accept": "application/json",
             },
-            body: JSON.stringify(currentMessages),
+            body: JSON.stringify({url: searchValue, prompt: data}),
           });
 
           if (!response.ok) {
             throw new Error('Network response was not ok');
           }
-  
           const res = await response.json();
-          console.log("Loaded message");
           setMessages([...currentMessages, { role: 'assistant', content: res.answer }]);
         } catch (error) {
           console.error('There was a problem with the fetch operation:', error);
@@ -98,7 +95,6 @@ function App() {
             variant="outlined"
             fullWidth
             label="Search"
-
             onKeyPress={handleKeyPress}
           />
         </div>

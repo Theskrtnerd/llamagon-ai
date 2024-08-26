@@ -4,13 +4,6 @@ import "./Document.css"
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css'
 import 'react-pdf/dist/esm/Page/TextLayer.css'
 
-const refs = ["Test1", "Test2", "Test3"];
-const listRefs = refs.map((ref) => 
-  <li>
-    {ref}
-  </li>
-);
-
 function MyDocument( {url, addMessage, history, setHistory, setMessages} ) {
   const [numPages, setNumPages] = useState();
   const [pageNumber, setPageNumber] = useState(1);
@@ -20,6 +13,7 @@ function MyDocument( {url, addMessage, history, setHistory, setMessages} ) {
     x: 0,
     y: 0,
   });
+  const [refs, setRefs] = useState([]);
 
   const sendMessage = () => {
     if (selectedContent.trim()) {
@@ -35,8 +29,30 @@ function MyDocument( {url, addMessage, history, setHistory, setMessages} ) {
   }, []);
   async function onDocumentLoadSuccess({ numPages }) {
     setNumPages(numPages);
+    if (!history.includes(url)) {
+      setHistory([...history, url]);
+      localStorage.setItem('searchHistory', JSON.stringify([...history, url]));
+    }
+    // try {
+    //   const response = await fetch(`http://34.209.51.63:8000/paper_retriever/context`, {
+    //     method: 'POST',
+    //     headers: {
+    //       "Content-Type": "application/json",
+    //       "accept": "application/json",
+    //     },
+    //     body: JSON.stringify({url: url}),
+    //   });
+
+    //   if (!response.ok) {
+    //     throw new Error('Network response was not ok');
+    //   }
+    //   const res = await response.json();
+    //   setMessages([{ role: 'system', content: `You are an useful assistant. You need to explain or answer user query based on the context: ${res.data}` }]);
+    // } catch (error) {
+    //   console.error('There was a problem with the fetch operation:', error);
+    // }
     try {
-      const response = await fetch(`http://34.209.51.63:8000/paper_retriever/context`, {
+      const response = await fetch(`http://34.209.51.63:8000/paper_retriever/index_paper`, {
         method: 'POST',
         headers: {
           "Content-Type": "application/json",
@@ -50,16 +66,11 @@ function MyDocument( {url, addMessage, history, setHistory, setMessages} ) {
       }
 
       const res = await response.json();
-      alert("Loaded context");
-      setMessages([{ role: 'system', content: `You are an useful assistant. You need to explain or answer user query based on the context: ${res.data}` }]);
+      setMessages([{ role: 'system', content: 'You are an useful assistant' }]);
+      alert("Loaded paper");
     } catch (error) {
       console.error('There was a problem with the fetch operation:', error);
     }
-    if (history.includes(url)) {
-        return;
-    }
-    setHistory([...history, url]);
-    localStorage.setItem('searchHistory', JSON.stringify([...history, url]));
   }
 
   function goToPrevPage() {
@@ -78,14 +89,34 @@ function MyDocument( {url, addMessage, history, setHistory, setMessages} ) {
 
   return (
     <div className="right-side"
-      onContextMenu={(e) => {
+      onContextMenu={async (e) => {
         e.preventDefault();
         setClicked(true);
         setPoints({
           x: e.pageX,
           y: e.pageY,
         });
-        setSelectedContent(window.getSelection().toString());
+        const content = window.getSelection().toString()
+        setSelectedContent(content);
+        try {
+          const response = await fetch(`http://34.209.51.63:8000/ref_retriever/search`, {
+            method: 'POST',
+            headers: {
+              "Content-Type": "application/json",
+              "accept": "application/json",
+            },
+            body: JSON.stringify({base_url: url, text: content}),
+          });
+    
+          if (!response.ok) {
+            throw new Error('Network response was not ok');
+          }
+    
+          const res = await response.json();
+          setRefs(res.data);
+        } catch (error) {
+          console.error('There was a problem with the fetch operation:', error);
+        }
       }}
     >
       {clicked && (
@@ -95,7 +126,13 @@ function MyDocument( {url, addMessage, history, setHistory, setMessages} ) {
             <li>
               References
               <ul className='submenu-items'>
-                {listRefs}
+                {refs.map((ref, index) =>
+                  <li key={index}>
+                    {Object.entries(ref).map(([key, value]) => (
+                      <span>[{key}]: {value}</span>
+                    ))}
+                  </li>
+                )}
               </ul>
             </li>
           </ul>
