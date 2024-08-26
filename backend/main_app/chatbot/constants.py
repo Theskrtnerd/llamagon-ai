@@ -1,0 +1,1 @@
+EMBEDDING_URL = "http://34.209.51.63:8003/compute-embedding/"

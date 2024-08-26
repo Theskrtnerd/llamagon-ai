@@ -6,10 +6,14 @@ class ChatInput(BaseModel):
     context: str
     question: str
 
-class ExplanationRequest(BaseModel):
-    role: str
-    content: str
+class ChatRequest(BaseModel):
+    url: str
+    prompt: str
 
 class Item(BaseModel):
     key1: str 
     key2: str
+
+class ChatWithPaperRequest(BaseModel):
+    url: str
+    text: str
