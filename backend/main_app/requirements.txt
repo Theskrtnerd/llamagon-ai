@@ -13,3 +13,4 @@ langchain-community
 httpx
 pymilvus[model]
 nltk
+groq

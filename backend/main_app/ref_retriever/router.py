@@ -1,8 +1,15 @@
 from fastapi import APIRouter
 from fastapi.responses import JSONResponse
-from fastapi.params import Body
-from ref_retriever.schemas import TextInput
+from ref_retriever.schemas import ReferenceRequest
 from ref_retriever.utils.parsing import extract_citation
+import setup
+from setup import milvus_client
+from pymilvus import Collection
+
+
+# Load Milvus collection
+paper_collection = Collection("paper_chunks")
+ref_collection = Collection("ref_chunks")
 
 
 router = APIRouter(
@@ -17,11 +24,17 @@ def read_root():
 
 
 @router.post("/search")
-def search(input: TextInput):
+def search(input: ReferenceRequest):
     try:
+        base_url = input.base_url
         text = input.text
-        print(f"Input: {text[:100]}...")
         citations = extract_citation(text)
-        return JSONResponse(status_code=200, content={"message": "References extracted.", "data": citations})
+        print(f"Citations: {citations}")
+        results = milvus_client.query(
+            collection_name="ref_chunks",
+            filter=f"""(base_url == "{base_url}") and (cite_id in {str(citations)})""",
+            output_fields=["cite_id", "title", "abstract", "url"],
+        )
+        return JSONResponse(status_code=200, content={"message": "References extracted.", "data": results})
     except Exception as e:
         raise JSONResponse(status_code=500, content={"message": f"{e}"})

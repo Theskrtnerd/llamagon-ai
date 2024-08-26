@@ -35,27 +35,45 @@ def retrieve_from_crossref(parsed_refs):
         'res_title': [],
         'URL': [],
         'abstract': [],
+        'arxiv_id': []
     }
 
     for ref in tqdm(parsed_refs):
+        print("-------------------------------")
+        print(ref)
+        print("-------------------------------")
         try:
             ref_text_title = ref["title"][0]
             search_result = crossref_search(ref_text_title)
             search_result_title = search_result['title'][0]
             search_result_url = search_result['URL']
             sim_score = tfidf_similarity(ref_text_title, search_result_title)
+            arxiv_id = ""
+            if 'arxiv' in ref.keys():
+                arxiv_id = ref['arxiv'][0]
+            elif 'date' in ref.keys():
+                arxiv_id = ref['date'][0].split("/")[1].split(",")[0]
+            if arxiv_id != "":
+                search_result_url = "https://arxiv.org/pdf/" + arxiv_id
+                sim_score = 1
         except:
             ref_text_title = ""
             search_result_title = ""
             search_result_url = ""
             sim_score = 0
+
+        try:
+            abstract = get_abstract(search_result_url)
+        except:
+            abstract = ""
         
         arxiv_search_results['cite_id'].append(ref['cite_id'])
         arxiv_search_results['ref_title'].append(ref_text_title)
         arxiv_search_results['res_title'].append(search_result_title)
         arxiv_search_results['tf-idf_score'].append(sim_score)
         arxiv_search_results['URL'].append(search_result_url)
-        arxiv_search_results['abstract'].append(get_abstract(search_result_url) if search_result_url else None)
+        arxiv_search_results['abstract'].append(abstract)
+        arxiv_search_results['arxiv_id'].append(arxiv_id)
 
     retrieve_df = pd.DataFrame(arxiv_search_results)
     return retrieve_df

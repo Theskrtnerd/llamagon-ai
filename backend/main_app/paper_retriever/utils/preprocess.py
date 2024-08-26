@@ -1,4 +1,7 @@
 from typing import List
+from langchain.document_loaders import PyPDFLoader
+from langchain.text_splitter import RecursiveCharacterTextSplitter
+from langchain.schema import Document
 
 
 def remove_hyphens(text: str) -> str:
@@ -55,3 +58,28 @@ def clean_text(text):
     text = replace_ligatures(text)
     text = remove_hyphens(text)
     return text
+
+
+def split_pdf(pdf_text: str, chunk_size=4000, chunk_overlap=200) -> list[str]:
+    documents = [Document(page_content=pdf_text)]
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=chunk_size, chunk_overlap=chunk_overlap, length_function=len
+    )
+    texts = text_splitter.split_documents(documents)
+    cleaned_texts = [doc.page_content.replace('\t', ' ') for doc in texts]
+    return cleaned_texts
+
+
+def encode_pdf_and_get_split_documents(paper_path, chunk_size=1000, chunk_overlap=200) -> List[str]:
+    # Load PDF documents
+    loader = PyPDFLoader(paper_path)
+    documents = loader.load()
+
+    # Split documents into chunks
+    text_splitter = RecursiveCharacterTextSplitter(
+        chunk_size=chunk_size, chunk_overlap=chunk_overlap, length_function=len
+    )
+    texts = text_splitter.split_documents(documents)
+    cleaned_texts = [doc.page_content.replace('\t', ' ') for doc in texts]
+    return cleaned_texts
+

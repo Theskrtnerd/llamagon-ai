@@ -1,6 +1,11 @@
 import re
 
 def extract_citation(text) -> list[str]:
+
+    # Prepare text
+    text = text.replace(' ', '')
+
+    # Find all citations in the text
     citation_pattern = r'\[\s*((\d+)(,\d+)*(\–\d+)*)\s*\]'
     matches = re.findall(citation_pattern, text)
     matches = [match[0] for match in matches]

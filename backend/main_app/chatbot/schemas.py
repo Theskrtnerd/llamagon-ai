@@ -1,6 +1,15 @@
 from pydantic import BaseModel
 from typing import List
 
+# Define the input schema
 class ChatInput(BaseModel):
+    context: str
     question: str
-    embeddings_list: List[List[float]]  # Assuming embeddings are a list of lists (2D list)
+
+class ExplanationRequest(BaseModel):
+    role: str
+    content: str
+
+class Item(BaseModel):
+    key1: str 
+    key2: str

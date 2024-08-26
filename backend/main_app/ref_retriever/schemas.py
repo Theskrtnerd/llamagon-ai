@@ -1,7 +1,8 @@
 from pydantic import BaseModel, Field
 from typing import List
 
-class TextInput(BaseModel):
+class ReferenceRequest(BaseModel):
+    base_url: str = Field(example="https://arxiv.org/pdf/2106.01484.pdf")
     text: str = Field(
         example="""
             In this context, several approaches for cross-modal retrieval between visual data and
