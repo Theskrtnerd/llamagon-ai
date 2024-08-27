@@ -114,6 +114,7 @@ function MyDocument( {url, addMessage, history, setHistory, setMessages} ) {
     
           const res = await response.json();
           setRefs(res.data);
+          console.log("References", res.data);
         } catch (error) {
           console.error('There was a problem with the fetch operation:', error);
         }
@@ -127,10 +128,12 @@ function MyDocument( {url, addMessage, history, setHistory, setMessages} ) {
               References
               <ul className='submenu-items'>
                 {refs.map((ref, index) =>
-                  <li key={index}>
-                    {Object.entries(ref).map(([key, value]) => (
-                      <span>[{key}]: {value}</span>
-                    ))}
+                  <li 
+                    key={index}
+                    onClick={() => window.open(ref.url, '_blank')} // Opens the URL in a new tab
+                    style={{ cursor: 'pointer' }}
+                  >
+                    {ref.cite_id}: {ref.title}
                   </li>
                 )}
               </ul>
