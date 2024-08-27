@@ -9,7 +9,8 @@ EMBEDDING_DIM = 1024
 REF_MAX_CAPACITY = 5
 fields = [
     # Use auto generated id as primary key
-    FieldSchema(name="url", dtype=DataType.VARCHAR, is_primary=True, max_length=200),
+    FieldSchema(name="id", dtype=DataType.INT64, is_primary=True, auto_id=True),                    # Auto generated id
+    FieldSchema(name="url", dtype=DataType.VARCHAR, max_length=200),
     FieldSchema(name="doc", dtype=DataType.VARCHAR, max_length=MAX_LENGTH),
     FieldSchema(name="sparse_vector", dtype=DataType.SPARSE_FLOAT_VECTOR),
     FieldSchema(name="dense_vector", dtype=DataType.FLOAT_VECTOR, dim=EMBEDDING_DIM),
