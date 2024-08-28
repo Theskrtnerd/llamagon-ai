@@ -3,6 +3,7 @@ from fastapi.responses import JSONResponse
 from paper_retriever.utils.parsing import parse_pdf2text, parse_references_and_citations, parse_references
 from paper_retriever.utils.io import make_working_dir, generate_unique_id, download_pdf, save_pdf
 from paper_retriever.utils.crossref import retrieve_from_crossref
+from paper_retriever.utils.arxiv import get_arxiv_title_by_url
 from paper_retriever.utils.summary import summarize_text
 from paper_retriever.utils.preprocess import split_pdf
 import paper_retriever.utils.indexing
@@ -30,60 +31,20 @@ def read_root():
     return JSONResponse(content={"message": "Welcome to the paper search API"})
 
 
-# @router.post("/context")
-# async def get_context(input: URLInput):
-#     try:        
-#         url = input.url
-
-#         # Check existence of the URL in the Milvus DB
-#         query_result = milvus_client.get(collection_name="paper_summaries", ids=[url])
-#         if query_result:
-#             summary = query_result[0].get("summary", None)
-#             print(f"\nContext existed: {query_result[0].get('summary', None)}")
-#             return JSONResponse(status_code=200, content={"message": "Context existed.", "data": summary})
-        
-#         # Download PDF file
-#         raw_file = download_pdf(url)
-#         if raw_file is None:
-#             return JSONResponse(status_code=400, content={"message": "Request failed.", "error": "PDF file cannot be downloaded."})
-#         file_name = generate_unique_id(url) + ".pdf"
-#         working_dir = make_working_dir()
-#         paper_path = save_pdf(working_dir, file_name, raw_file)
-#         print(f"\nPDF file saved to: {paper_path}")
-
-#         # Convert PDF to text
-#         pdf_text = parse_pdf2text(paper_path)
-#         pdf_text = pdf_text.replace('\t', ' ')
-#         print(f"\nPDF text: {pdf_text[:200]}...")
-#         print(f"\nLength of PDF text: {len(pdf_text)}")
-
-#         # Split PDF text into chunks
-#         chunks = split_pdf(pdf_text)
-#         summary = summarize_text(chunks)
-#         print(f"\nSummary: {summary[:200]}...")
-#         print(f"\nLength of summary: {len(summary)}")
-
-#         # Index the context into Milvus DB
-#         await index_summary(url, summary)
-
-#         return JSONResponse(status_code=200, content={"message": "Context extracted.", "data": summary})
-#     except Exception as e:
-#         raise JSONResponse(status_code=500, content={"message": f"{e}"})
-
-
 @router.post("/index_paper")
 async def index_paper(input: URLInput):
     try:    
         url = input.url
+        title = get_arxiv_title_by_url(url)
 
         # Check existence of the URL in the Milvus DB before indexing to paper_chunks and ref_chunks collection
         query_result = milvus_client.query(
             collection_name="paper_chunks", 
             filter=f"url == '{url}'",        
         )
-        # if query_result:
-        #     print(f"\nPaper has already been indexed to paper_chunks.")
-        #     return JSONResponse(status_code=200, content={"message": "Paper has already been indexed."})
+        if query_result:
+            print(f"\nPaper has already been indexed to paper_chunks.")
+            return JSONResponse(status_code=200, content={"message": "Paper has already been indexed", "title": title})
         
         # Download PDF file
         raw_file = download_pdf(url)
@@ -114,7 +75,7 @@ async def index_paper(input: URLInput):
         # Index into ref_chunks collection      
         await index_references(url, retrieve_df)
 
-        return JSONResponse(status_code=200, content={"message": "Paper is indexed successfully.", "data": retrieve_df.to_dict(orient='records')})
+        return JSONResponse(status_code=200, content={"message": "Paper is indexed successfully.", "title": title, "data": retrieve_df.to_dict(orient='records')})
     
     except Exception as e:
         raise JSONResponse(status_code=500, content={"message": f"{e}"})
