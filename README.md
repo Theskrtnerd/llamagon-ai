@@ -45,7 +45,25 @@ Prerequisites:
 - Navigate to the project directory: ```cd llamagonai```
 - Frontend:
   ```
+  cd frontend
   npm install
   npm start
   ```
-- Build and run the Docker container: ```docker-compose up --build```
+- Backend:
+- Install and run Milvus:
+  ```
+  cd backend/milvus
+  docker compose up --build
+  ```
+- Build image for embedding service:
+  ```
+  cd backend/embedding
+  docker build -t ebd .
+  docker run --gpus all -p 8003:8003 ebd
+  ```
+- Build image for main service:
+  ```
+  cd backend/main_app
+  docker build -t main .
+  docker run -p 8000:8000 main
+  ```
