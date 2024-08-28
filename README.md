@@ -6,25 +6,25 @@ LlamagonAI is an AI-powered research paper reading assistant designed to streaml
 
 ## Key Features
 
-1. Interactive Paper Reading
+1. **Interactive Paper Reading**
 LlamagonAI allows researchers to actively interact with papers by selecting specific sections of text and asking the system to explain or summarize the content.
 
-2. Smart Citation Retrieval
+2. **Smart Citation Retrieval**
 With one-click access, LlamagonAI retrieves reference papers directly, saving time and effort in finding related work.
 
 ## System Design
 LlamagonAI consists of three core modules, all hosted within a Docker container served using FastAPI:
 
-1. Paper Indexing Module
+1. **Paper Indexing Module**
 - PDF to Text Conversion: Uses pypdf to convert PDF files into text.
 - Document Chunking: Text is split into manageable chunks for processing.
 - Metadata Extraction: Uses regex to identify and extract metadata from the references section, parsing it with AnyStyle.io.
 - URL Construction: Constructs URLs for reference papers using arXiv IDs or Crossref API when necessary.
 
-2. Reference Retriever Module
+2. **Reference Retriever Module**
 - Citation Parsing: Users can select text with citation symbols, and the system maps these citations to URLs for easy access.
 
-3. Chatbot Module
+3. **Chatbot Module**
 - Contextual Q&A: Users can ask questions or request explanations of selected text. The system retrieves relevant document chunks and uses Groq API for answering.
 
 Vector Embedding Service
@@ -43,4 +43,9 @@ Prerequisites:
 ## Installation
 - Clone the repository: ```git clone [git@github.com:Theskrtnerd/llamagon-ai.git](https://github.com/Theskrtnerd/llamagon-ai.git)```
 - Navigate to the project directory: ```cd llamagonai```
+- Frontend:
+  ```
+  npm install
+  npm start
+  ```
 - Build and run the Docker container: ```docker-compose up --build```
