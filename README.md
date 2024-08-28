@@ -41,6 +41,6 @@ Prerequisites:
 - Hugging Face API
 
 ## Installation
-- Clone the repository: ```git clone https://github.com/your_username/llamagonai.git```
+- Clone the repository: ```git clone git@github.com:Theskrtnerd/llamagon-ai.git```
 - Navigate to the project ```directory: cd llamagonai```
 - Build and run the Docker ```container: docker-compose up --build```
