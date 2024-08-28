@@ -70,7 +70,7 @@ async def index_paper(input: URLInput):
 
         # Query titles of references by crossref, and filter out results with title that shared high similarity with the query titles
         retrieve_df = retrieve_from_crossref(parsed_refs)
-        retrieve_df = retrieve_df[retrieve_df["tf-idf_score"] > 0.7]
+        retrieve_df = retrieve_df[retrieve_df["tf-idf_score"] > 0.5]
 
         # Index into ref_chunks collection      
         await index_references(url, retrieve_df)

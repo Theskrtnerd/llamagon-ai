@@ -39,33 +39,45 @@ def retrieve_from_crossref(parsed_refs):
     }
 
     for ref in tqdm(parsed_refs):
+        ref_text_title = ""
+        search_result_title = ""
+        sim_score = 0
+        search_result_url = ""
+        arxiv_id = ""
+        abstract = ""
+
         print("-------------------------------")
-        print(ref)
-        print("-------------------------------")
+
         try:
             ref_text_title = ref["title"][0]
             search_result = crossref_search(ref_text_title)
             search_result_title = search_result['title'][0]
-            search_result_url = search_result['URL']
             sim_score = tfidf_similarity(ref_text_title, search_result_title)
-            arxiv_id = ""
+        except:
+            pass
+
+        try:
+            search_result_url = search_result['URL']
+        except:
+            pass
+        
+        try:
             if 'arxiv' in ref.keys():
                 arxiv_id = ref['arxiv'][0]
             elif 'date' in ref.keys():
                 arxiv_id = ref['date'][0].split("/")[1].split(",")[0]
-            if arxiv_id != "":
-                search_result_url = "https://arxiv.org/pdf/" + arxiv_id
-                sim_score = 1
+            search_result_url = "https://arxiv.org/pdf/" + arxiv_id
+            sim_score = 1    
         except:
-            ref_text_title = ""
-            search_result_title = ""
-            search_result_url = ""
-            sim_score = 0
+            pass        
 
         try:
             abstract = get_abstract(search_result_url)
         except:
-            abstract = ""
+            pass
+
+        print(f"Ref: {ref['cite_id']}\t{search_result_title}\t{sim_score}\t{search_result_url}")        
+        print("-------------------------------")
         
         arxiv_search_results['cite_id'].append(ref['cite_id'])
         arxiv_search_results['ref_title'].append(ref_text_title)

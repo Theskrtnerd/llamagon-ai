@@ -135,10 +135,6 @@ async def index_references(base_url, reference_df):
             "abstract": cleaned_abstracts[i],
             "abstract_dense_vector": dense_vectors[i],
         }
-        print(f"cite_id: {row['cite_id']}")
-        print(f"title: {row['res_title']}")
-        print(f"url: {row['URL']}")
-        print(f"abstract: {cleaned_abstracts[i]}")
         records.append(record)
 
     # Insert the record into Milvus DB
