@@ -50,18 +50,18 @@ Prerequisites:
   npm start
   ```
 - **Backend**:
-  Install and run Milvus:
+  + Install and run Milvus:
     ```
     cd backend/milvus
     docker compose up --build
     ```
-  Build image for embedding service:
+  + Build image for embedding service:
     ```
     cd backend/embedding
     docker build -t ebd .
     docker run --gpus all -p 8003:8003 ebd
     ```
-  Build image for main service:
+  + Build image for main service:
     ```
     cd backend/main_app
     docker build -t main .
