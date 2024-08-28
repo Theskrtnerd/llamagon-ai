@@ -107,8 +107,8 @@ function App() {
             </div>
             <div className="history-detail">
               {history && history.map((item, index) => (
-                <div key={index} className="history-item" onClick={() => setSearchValue(item)}>
-                  {item}
+                <div key={index} className="history-item" onClick={() => setSearchValue(item.url)}>
+                  {item.label}
                 </div>
               ))}
             </div>
