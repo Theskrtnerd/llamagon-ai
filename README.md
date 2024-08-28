@@ -43,27 +43,27 @@ Prerequisites:
 ## Installation
 - Clone the repository: ```git clone [git@github.com:Theskrtnerd/llamagon-ai.git](https://github.com/Theskrtnerd/llamagon-ai.git)```
 - Navigate to the project directory: ```cd llamagonai```
-- Frontend:
+- **Frontend**:
   ```
   cd frontend
   npm install
   npm start
   ```
-- Backend:
-- Install and run Milvus:
-  ```
-  cd backend/milvus
-  docker compose up --build
-  ```
-- Build image for embedding service:
-  ```
-  cd backend/embedding
-  docker build -t ebd .
-  docker run --gpus all -p 8003:8003 ebd
-  ```
-- Build image for main service:
-  ```
-  cd backend/main_app
-  docker build -t main .
-  docker run -p 8000:8000 main
-  ```
+- **Backend**:
+  Install and run Milvus:
+    ```
+    cd backend/milvus
+    docker compose up --build
+    ```
+  Build image for embedding service:
+    ```
+    cd backend/embedding
+    docker build -t ebd .
+    docker run --gpus all -p 8003:8003 ebd
+    ```
+  Build image for main service:
+    ```
+    cd backend/main_app
+    docker build -t main .
+    docker run -p 8000:8000 main
+    ```
