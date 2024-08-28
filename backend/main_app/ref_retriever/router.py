@@ -33,15 +33,23 @@ def search(input: ReferenceRequest):
         results = milvus_client.query(
             collection_name="ref_chunks",
             filter=f"""(base_url == "{base_url}") and (cite_id in {str(citations)})""",
-            output_fields=["cite_id", "url"],
+            output_fields=["cite_id", "url", "title"],
         )
 
-        unique_results = []
+        returned_records = []
         for result in results:
             cite_id = result.get("cite_id")
             url = result.get("url")
-            if {cite_id: url} not in unique_results:
-                unique_results.append({cite_id: url})
-        return JSONResponse(status_code=200, content={"message": "References extracted.", "data": unique_results})
+            title = result.get("title")
+            record = {
+                "cite_id": cite_id,
+                "url": url,
+                "title": title.replace('\n', ' ').replace('\t', ' ')
+            }
+            if record not in returned_records:
+                returned_records.append(record)
+
+        print(f"Returned records: {returned_records}")
+        return JSONResponse(status_code=200, content={"message": "References extracted.", "data": returned_records})
     except Exception as e:
         raise JSONResponse(status_code=500, content={"message": f"{e}"})
