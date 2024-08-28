@@ -1,5 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Document, Page } from 'react-pdf';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import "./Document.css"
 import 'react-pdf/dist/esm/Page/AnnotationLayer.css'
 import 'react-pdf/dist/esm/Page/TextLayer.css'
@@ -9,11 +11,9 @@ function MyDocument( {url, addMessage, history, setHistory, setMessages} ) {
   const [pageNumber, setPageNumber] = useState(1);
   const [clicked, setClicked] = useState(false);
   const [selectedContent, setSelectedContent] = useState("");
-  const [points, setPoints] = useState({
-    x: 0,
-    y: 0,
-  });
+  const [points, setPoints] = useState({ x: 0, y: 0 });
   const [refs, setRefs] = useState([]);
+  const [isIndexing, setIsIndexing] = useState(false); 
 
   const sendMessage = () => {
     if (selectedContent.trim()) {
@@ -31,24 +31,7 @@ function MyDocument( {url, addMessage, history, setHistory, setMessages} ) {
 
   async function onDocumentLoadSuccess({ numPages }) {
     setNumPages(numPages);
-    // try {
-    //   const response = await fetch(`http://34.209.51.63:8000/paper_retriever/context`, {
-    //     method: 'POST',
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //       "accept": "application/json",
-    //     },
-    //     body: JSON.stringify({url: url}),
-    //   });
-
-    //   if (!response.ok) {
-    //     throw new Error('Network response was not ok');
-    //   }
-    //   const res = await response.json();
-    //   setMessages([{ role: 'system', content: `You are an useful assistant. You need to explain or answer user query based on the context: ${res.data}` }]);
-    // } catch (error) {
-    //   console.error('There was a problem with the fetch operation:', error);
-    // }
+    setIsIndexing(true);
     try {
       const response = await fetch(`http://34.209.51.63:8000/paper_retriever/index_paper`, {
         method: 'POST',
@@ -76,9 +59,11 @@ function MyDocument( {url, addMessage, history, setHistory, setMessages} ) {
       }
 
       setMessages([{ role: 'system', content: 'You are an useful assistant' }]);
-      alert("Loaded paper");
+      toast.success("Paper loaded successfully!");
     } catch (error) {
       console.error('There was a problem with the fetch operation:', error);
+    } finally {
+      setIsIndexing(false);
     }
   }
 
@@ -97,16 +82,13 @@ function MyDocument( {url, addMessage, history, setHistory, setMessages} ) {
   });
 
   return (
-    <div className="right-side"
-      onContextMenu={async (e) => {
-        e.preventDefault();
-        setClicked(true);
-        setPoints({
-          x: e.pageX,
-          y: e.pageY,
-        });
-        const content = window.getSelection().toString()
-        setSelectedContent(content);
+    <div className="right-side"             // Add 'indexing' class when loading
+    onContextMenu={async (e) => {
+      e.preventDefault();
+      setClicked(true);
+      setPoints({ x: e.pageX, y: e.pageY });
+      const content = window.getSelection().toString();
+      setSelectedContent(content);
         try {
           const response = await fetch(`http://34.209.51.63:8000/ref_retriever/search`, {
             method: 'POST',
@@ -129,6 +111,8 @@ function MyDocument( {url, addMessage, history, setHistory, setMessages} ) {
         }
       }}
     >
+      {isIndexing && <div className="indexing-indicator">Paper is being indexed, please use features after indexing is done...</div>} {/* Loading message */}
+      <ToastContainer />
       {clicked && (
         <div className='submenu' style={display(points.x, points.y)}>
           <ul>
