@@ -20,6 +20,7 @@ function MyDocument( {url, addMessage, history, setHistory, setMessages} ) {
       addMessage(selectedContent);
     }
   };
+
   useEffect(() => {
     const handleClick = () => setClicked(false);
     window.addEventListener("click", handleClick);
@@ -27,12 +28,9 @@ function MyDocument( {url, addMessage, history, setHistory, setMessages} ) {
       window.removeEventListener("click", handleClick);
     };
   }, []);
+
   async function onDocumentLoadSuccess({ numPages }) {
     setNumPages(numPages);
-    if (!history.includes(url)) {
-      setHistory([...history, url]);
-      localStorage.setItem('searchHistory', JSON.stringify([...history, url]));
-    }
     // try {
     //   const response = await fetch(`http://34.209.51.63:8000/paper_retriever/context`, {
     //     method: 'POST',
@@ -65,7 +63,18 @@ function MyDocument( {url, addMessage, history, setHistory, setMessages} ) {
         throw new Error('Network response was not ok');
       }
 
-      const res = await response.json();
+      const res = await response.json();      
+      const historyItem = {
+        label: res.title || url,
+        url: url,
+      };
+
+      if (!history.some(item => item.label === historyItem.label || item.url === historyItem.url)) {
+        const updatedHistory = [...history, historyItem];
+        setHistory(updatedHistory);
+        localStorage.setItem('searchHistory', JSON.stringify(updatedHistory));
+      }
+
       setMessages([{ role: 'system', content: 'You are an useful assistant' }]);
       alert("Loaded paper");
     } catch (error) {
@@ -114,6 +123,7 @@ function MyDocument( {url, addMessage, history, setHistory, setMessages} ) {
     
           const res = await response.json();
           setRefs(res.data);
+          console.log("References", res.data);
         } catch (error) {
           console.error('There was a problem with the fetch operation:', error);
         }
@@ -127,10 +137,12 @@ function MyDocument( {url, addMessage, history, setHistory, setMessages} ) {
               References
               <ul className='submenu-items'>
                 {refs.map((ref, index) =>
-                  <li key={index}>
-                    {Object.entries(ref).map(([key, value]) => (
-                      <span>[{key}]: {value}</span>
-                    ))}
+                  <li 
+                    key={index}
+                    onClick={() => window.open(ref.url, '_blank')} // Opens the URL in a new tab
+                    style={{ cursor: 'pointer' }}
+                  >
+                    {ref.cite_id}: {ref.title}
                   </li>
                 )}
               </ul>

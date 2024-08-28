@@ -4,17 +4,20 @@
   --other: #ead7c3;
   --primary-text: black;
 }
+
 * {
   padding: 0;
   margin: 0;
   max-width: 100vw;
   max-height: 100vh;
 }
+
 .App {
   text-align: center;
   margin: 0px;
   max-width: 100vw;
 }
+
 .App-header {
   background-color: var(--primary);
   height: 10vh;
@@ -26,19 +29,23 @@
   width: 100%;
   border-bottom: 1px solid black;
 }
+
 .App-search {
   width: 50%;
   color: "secondary";
 }
+
 .search-items {
   width: 50%;
   background-color: black;
 }
+
 .App-content {
   height: 90vh;
   display: flex;
   flex-direction: row;
 }
+
 .left-side {
   width: 30%;
   height: 100%;
@@ -48,6 +55,7 @@
   align-items: center;
   flex-direction: column;
 }
+
 .content-header {
   color: var(--primary-text);
   width: 100%;
@@ -59,6 +67,7 @@
   justify-content: center;
   align-items: center;
 }
+
 .history-box {
   margin-top: 10px;
   width: 90%;
@@ -69,9 +78,11 @@
   align-items: center;
   border-radius: 5px;
 }
+
 .history-box>div {
   border-bottom: 1px solid black;
 }
+
 .history-detail {
   width: 100%;
   height: calc(100%-50px);
@@ -79,6 +90,18 @@
   align-items: center;
   overflow-y: scroll;
 }
+
+.history-item {
+  padding: 10px;  /* Add padding for spacing */
+  width: 100%;    /* Make each item take the full width */
+  border-bottom: 1px solid #ddd; /* Light border to separate items */
+  cursor: pointer; /* Cursor change on hover */
+}
+
+.history-item:last-child {
+  border-bottom: none; /* Remove border from the last item */
+}
+
 .chatbot-box {
   margin-top: 10px;
   width: 90%;
@@ -88,14 +111,17 @@
   align-items: center;
   border-radius: 5px;
 }
+
 .chatbot-box>div {
   border: 1px solid black;
 }
+
 .chatbot-detail {
   width: 100%;
   border: 1px solid black;
   height: 70%;
 }
+
 .chatbot-content {
   height: 90%;
   display: flex;
@@ -103,6 +129,7 @@
   text-align: justify;
   overflow-y: scroll;
 }
+
 .assistant, .user {
   max-width: 70%;
   display: block;
@@ -120,6 +147,7 @@
   align-self: flex-end;
   background-color: #d1e7dd; /* Example color */
 }
+
 .chatbot-footer {
   display: flex;
   justify-content: space-between;
@@ -129,6 +157,7 @@
   border-top: 1px solid black;
   background-color: var(--secondary);
 }
+
 .chatbot-input {
   width: 80%; /* Takes up most of the footer space */
   padding: 10px;

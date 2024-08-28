@@ -21,7 +21,7 @@
     margin: 0 10px;
 }
 .submenu {
-    width: 100px;
+    min-width: 100px;
     min-height: 50px;
     background-color: black;
     color: white;
@@ -32,8 +32,11 @@
     margin: 0;
 }
 .submenu ul li {
+    width: auto;
+    font-size: 12px;
     padding: 5px 10px;
     cursor: pointer;
+    overflow-wrap: break-word;
 }
 .submenu ul li:hover {
     background-color: var(--primary);
@@ -48,6 +51,8 @@
     color: white;
     padding: 10px;
     /* border-radius: 5px; */
+    width: auto; /* Allow submenu-items to expand based on content */
+    min-width: 300px; /* Ensure submenu-items has a minimum width */
 }
 .submenu ul li:hover .submenu-items {
 display: block;
